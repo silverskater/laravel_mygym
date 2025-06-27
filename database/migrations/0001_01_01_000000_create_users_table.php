@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->enum('role', ['member', 'instructor', 'admin'])->default('member');
+            $table->string('phone')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -42,6 +44,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Drop dependent tables first to avoid foreign key constraint errors.
+        // Note: Ideally each migration should only drop the tables it created
+        // and best practice is to run rollbacks one at a time in the correct
+        // order.
+        Schema::dropIfExists('scheduled_classes');
+        // Drop the main tables last
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

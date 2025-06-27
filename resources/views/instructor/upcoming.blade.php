@@ -13,12 +13,12 @@
                     <div class="py-6">
                         <div class="flex gap-6 justify-between">
                             <div>
-                            <p class="text-2xl font-bold text-purple-700">{{ $class->classType->name }}</p>
-                            <span class="text-slate-600 text-sm">{{ $class->classType->minutes }} minutes</span>
+                                <p class="text-2xl font-bold text-purple-700">{{ $class->classType->name }}</p>
+                                <span class="text-slate-600 text-sm">{{ $class->classType->duration }} minutes</span>
                             </div>
                             <div class="text-right flex-shrink-0">
-                            <p class="text-lg font-bold">{{ $class->date_time->format('H:i') }}</p>
-                            <p class="text-sm">{{ $class->date_time->format('jS M') }}</p>
+                                <p class="text-lg font-bold">{{ $class->scheduled_at->format('H:i') }}</p>
+                                <p class="text-sm">{{ $class->scheduled_at->format('jS M') }}</p>
                             </div>
                         </div>
                         @can('delete', $class)

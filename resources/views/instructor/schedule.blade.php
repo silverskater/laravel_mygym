@@ -29,13 +29,13 @@
                                     <label class="text-sm">Time</label>
                                     <select type="time" name="time" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" required>
                                         @for ($time = strtotime('06:00'); $time <= strtotime('20:30'); $time += 30 * 60)
-                                            <option value="{{ date('H:i:s', $time) }}">{{ date('H:i', $time) }}</option>
+                                        <option value="{{ date('H:i:s', $time) }}">{{ date('H:i', $time) }}</option>
                                         @endfor
                                     </select>
                                 </div>
                             </div>
                             <div>
-                                @error('date_time')
+                                @error('scheduled_at')
                                 <div class="text-sm text-red-600">{{ $message }}</div>
                                 @enderror
                             </div>

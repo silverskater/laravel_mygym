@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('instructor_id')->constrained('users');
             $table->foreignId('class_type_id')->constrained();
-            $table->datetime('date_time')->unique();
+            $table->datetime('scheduled_at'); // Date and time when the class is scheduled
+            $table->integer('capacity')->unsigned()->default(20); // Default capacity for classes
+            $table->enum('status', ['scheduled', 'completed', 'canceled'])->default('scheduled'); // Status of the class
+            $table->string('location')->nullable(); // Optional location for the class
+            $table->string('description')->nullable(); // Optional description for the class
             $table->timestamps();
         });
     }

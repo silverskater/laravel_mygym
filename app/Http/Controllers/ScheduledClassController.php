@@ -14,8 +14,11 @@ class ScheduledClassController extends Controller
      */
     public function index()
     {
-        // $scheduledClasses = Auth::user()->scheduledClasses()->upcoming()->oldest('date_time')->get();
-        $scheduledClasses = Auth::user()->scheduledClasses()->where('date_time', '>', now())->oldest('date_time')->get();
+        $scheduledClasses = Auth::user()->scheduledClasses()
+            ->where('scheduled_at', '>', now())
+            ->where('status', 'scheduled')
+            ->oldest('scheduled_at')
+            ->get();
         return view('instructor.upcoming')->with('scheduledClasses', $scheduledClasses);
     }
 
@@ -33,14 +36,14 @@ class ScheduledClassController extends Controller
     public function store(Request $request)
     {
         $request->merge([
-            'date_time' => $request->input('date') . ' ' . $request->input('time'),
+            'scheduled_at' => $request->input('date') . ' ' . $request->input('time'),
             'instructor_id' => Auth::id(),
         ]);
 
         $values = $request->validate([
             'class_type_id' => 'required',
             'instructor_id' => 'required',
-            'date_time' => 'required|unique:scheduled_classes,date_time|after:now',
+            'scheduled_at' => 'required|unique:scheduled_classes,scheduled_at|after:now',
         ]);
 
         ScheduledClass::create($values);

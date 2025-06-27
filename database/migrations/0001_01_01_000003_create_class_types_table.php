@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description');
-            $table->integer('minutes');
+            $table->integer('duration')->unsigned()->default(60); // In minutes.
+            $table->integer('capacity')->unsigned()->default(20); // Default capacity for classes.
+            $table->enum('level', ['beginner', 'intermediate', 'advanced', 'all'])->default('all'); // Class level.
+            $table->enum('status', ['active', 'inactive'])->default('active'); // Status of the class type.
+            $table->string('color')->default('#4F46EA'); // Default color for the class type, can be used for UI representation.
+            $table->string('image')->nullable(); // Optional image for the class
             $table->timestamps();
         });
     }
