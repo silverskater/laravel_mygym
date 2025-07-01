@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,18 +13,13 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request)
     {
-        switch (Auth::user()->role) {
-            case 'instructor':
-                return redirect()->route('instructor.dashboard');
-
-            case 'member':
-                return redirect()->route('member.dashboard');
-
-            case 'admin':
-                return redirect()->route('admin.dashboard');
-
-            default:
-                return redirect()->route('login');
+        if (in_array(Auth::user()->role, User::ROLES)) {
+            $route = Auth::user()->role . '.dashboard';
         }
+        else {
+            $route = 'login';
+        }
+
+        return redirect()->route($route);
     }
 }
