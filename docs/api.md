@@ -266,7 +266,7 @@ curl -X POST http://localhost/api/login \
   -d '{"email":"alice@example.com","password":"password123"}'
 ```
 
-### Login and extract the token using [jq](https://jqlang.org/) and `cut`
+### <a name="login-jq"></a> Login and extract the token using [jq](https://jqlang.org/) and `cut`
 
 Laravel Sanctum returns tokens in the format `<id>|<token>`.
 

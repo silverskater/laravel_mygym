@@ -1,0 +1,67 @@
+# Developer Notes
+
+## Project Setup
+
+[Composer](https://getcomposer.org/) is required to install dependencies:
+  `composer install`
+
+[Laravel Sail](https://laravel.com/docs/master/sail) is a light-weight command-line interface for interacting with Laravel's default Docker development environment.
+
+- **Start:**  
+  `sail up -d`
+- **Stop:**  
+  `sail down`
+- **Logs:**  
+  `sail logs laravel.test`
+- **Shell:**  
+  `sail shell`
+- **Run artisan:**  
+  `sail artisan <command>`
+
+## API
+
+- The API Endpoints are documented in [api.md](./api.md).
+- All API endpoints except `/register` and `/login` require authentication via Laravel Sanctum.
+- Pass the token as a Bearer token in the `Authorization` header.
+- Tokens are returned in the format `<id>|<token>`. Use only the part after the `|` for API requests if needed. See [Login and extract the token](./api.md#login-jq) for an example.
+
+## Laravel Sanctum
+
+[Laravel Sanctum](https://laravel.com/docs/master/sanctum) provides token management and token abilities for API endpoint authentication.  
+Sanctum routes and logic are in `routes/api.php` and the `User` model must use the `HasApiTokens` trait.
+
+## Database
+
+- **Migrate:**  
+  `sail artisan migrate`
+- **Rollback:**  
+  `sail artisan migrate:rollback`
+- **Seed:**  
+  `sail artisan db:seed`
+- **Refresh (reset and seed):**  
+  `sail artisan migrate:fresh --seed`
+
+- Seeders are in `database/seeders/`.
+- Factories for test data are in `database/factories/`.
+
+## Automated Tests
+
+- Run all tests:  
+  `sail artisan test`
+- Run with coverage:  
+  `sail artisan test --coverage`
+- Feature and API tests are in `tests/Feature/Api/`.
+- Use factories for all models in tests to ensure database integrity and isolation.
+
+## Troubleshooting
+
+- If API endpoints return HTML instead of JSON, ensure you set the `Accept: application/json` header.
+- Foreign key errors in tests usually mean a related model was not created; always create required related records in tests.
+- For Sanctum, ensure `HasApiTokens` is used in the `User` model.
+- To clear caches:  
+  ```
+  sail artisan config:clear
+  sail artisan cache:clear
+  sail artisan route:clear
+  ```
+
