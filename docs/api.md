@@ -266,11 +266,28 @@ curl -X POST http://localhost/api/login \
   -d '{"email":"alice@example.com","password":"password123"}'
 ```
 
+### Login and extract the token using [jq](https://jqlang.org/) and `cut`
+
+Laravel Sanctum returns tokens in the format `<id>|<token>`.
+
+```sh
+export TOKEN=$(curl -s -X POST http://localhost/api/login \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{"email":"alice@example.com","password":"password123"}' | jq -r '.token' | cut -d'|' -f2)
+
+if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
+  echo "Failed to obtain token. Check your credentials or API status."
+else
+  echo "Token: $TOKEN"
+fi
+```
+
 ### List all class types (authenticated)
 
 ```sh
 curl -X GET http://localhost/api/class-types \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Accept: application/json'
 ```
 
@@ -278,7 +295,7 @@ curl -X GET http://localhost/api/class-types \
 
 ```sh
 curl -X POST http://localhost/api/class-types \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{"name":"Yoga","description":"Stretch and relax","duration":60,"capacity":20,"level":"all","status":"active","color":"#fff"}'
@@ -288,38 +305,38 @@ curl -X POST http://localhost/api/class-types \
 
 ```sh
 curl -X POST http://localhost/api/scheduled-classes \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{"class_type_id":1,"instructor_id":2,"scheduled_at":"2025-07-01T10:00:00","capacity":15,"status":"scheduled","location":"Studio 1","description":"Morning yoga"}'
 ```
 
-### Get current user's profile
+### Get the current user's profile
 
 ```sh
 curl -X GET http://localhost/api/me \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Accept: application/json'
 ```
 
-### Update current user's profile
+### Update the current user's profile
 
 ```sh
 curl -X PUT http://localhost/api/me \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{"name":"Alice Updated","email":"alice2@example.com"}'
 ```
 
-### Change password
+### Change the current user's password
 
 ```sh
 curl -X PUT http://localhost/api/me/password \
-  -H 'Authorization: Bearer <TOKEN>' \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{"current_password":"password123","new_password":"newpass456"}'
 ```
 
-> Replace `<TOKEN>` with the token received from the login or register response.
+> Set `${TOKEN}` to the token received from the login or register response.
