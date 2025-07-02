@@ -44,9 +44,10 @@ class ScheduledClassTest extends TestCase
 
     public function test_show_nonexistent_scheduled_class_returns_404()
     {
-        $this->actingAsAdmin()
-            ->getJson('/api/scheduled-classes/99999')
-            ->assertStatus(404);
+        $response = $this->actingAsAdmin()
+            ->getJson('/api/scheduled-classes/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
     }
 
     public function test_create_scheduled_class_success()
@@ -124,9 +125,10 @@ class ScheduledClassTest extends TestCase
 
     public function test_delete_nonexistent_scheduled_class_returns_404()
     {
-        $this->actingAsAdmin()
-            ->deleteJson('/api/scheduled-classes/99999')
-            ->assertStatus(404);
+        $response = $this->actingAsAdmin()
+            ->deleteJson('/api/scheduled-classes/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
     }
 
     public function test_index_by_class_type()
@@ -137,6 +139,14 @@ class ScheduledClassTest extends TestCase
             ->getJson("/api/class-types/{$classType->id}/scheduled-classes")
             ->assertOk()
             ->assertJsonCount(2);
+    }
+
+    public function test_index_by_class_type_nonexistent_returns_404_with_message()
+    {
+        $this->actingAsAdmin()
+            ->getJson('/api/class-types/99999/scheduled-classes')
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Resource not found.']);
     }
 
     public function test_user_classes_for_instructor()
@@ -162,5 +172,41 @@ class ScheduledClassTest extends TestCase
             ->getJson("/api/users/{$member->id}/scheduled-classes")
             ->assertOk()
             ->assertExactJson([]);
+    }
+
+    public function test_update_nonexistent_scheduled_class_returns_404()
+    {
+        $classType = ClassType::factory()->create();
+        $this->actingAsAdmin()
+            ->putJson('/api/scheduled-classes/99999', [
+                'capacity' => 99,
+                'status' => 'completed',
+                'class_type_id' => $classType->id,
+            ])
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Resource not found.']);
+    }
+
+    public function test_update_scheduled_class_requires_class_type_id_validation()
+    {
+        $classType = ClassType::factory()->create();
+        $sc = ScheduledClass::factory()->create([
+            'class_type_id' => $classType->id,
+        ]);
+        // Try to update with an invalid class_type_id
+        $this->actingAsAdmin()
+            ->putJson("/api/scheduled-classes/{$sc->id}", [
+                'class_type_id' => 999999, // non-existent
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors(['class_type_id']);
+    }
+
+    public function test_user_classes_for_nonexistent_user_returns_404_with_message()
+    {
+        $this->actingAsAdmin()
+            ->getJson('/api/users/99999/scheduled-classes')
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Resource not found.']);
     }
 }

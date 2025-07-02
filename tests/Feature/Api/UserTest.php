@@ -36,9 +36,10 @@ class UserTest extends TestCase
 
     public function test_show_nonexistent_user_returns_404()
     {
-        $this->actingAsAdmin()
-            ->getJson('/api/users/99999')
-            ->assertStatus(404);
+        $response = $this->actingAsAdmin()
+            ->getJson('/api/users/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
     }
 
     public function test_update_user_success()
@@ -78,8 +79,22 @@ class UserTest extends TestCase
 
     public function test_delete_nonexistent_user_returns_404()
     {
+        $response = $this->actingAsAdmin()
+            ->deleteJson('/api/users/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
+    }
+
+    public function test_update_nonexistent_user_returns_404()
+    {
         $this->actingAsAdmin()
-            ->deleteJson('/api/users/99999')
-            ->assertStatus(404);
+            ->putJson('/api/users/99999', [
+                'name' => 'Updated Name',
+                'email' => 'updated@example.com',
+                'role' => 'instructor',
+                'phone' => '1234567890',
+            ])
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Resource not found.']);
     }
 }

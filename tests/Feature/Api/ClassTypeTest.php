@@ -37,9 +37,10 @@ class ClassTypeTest extends TestCase
 
     public function test_show_nonexistent_class_type_returns_404()
     {
-        $this->actingAsAdmin()
-            ->getJson('/api/class-types/99999')
-            ->assertStatus(404);
+        $response = $this->actingAsAdmin()
+            ->getJson('/api/class-types/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
     }
 
     public function test_create_class_type_success()
@@ -94,6 +95,17 @@ class ClassTypeTest extends TestCase
             ->assertJsonValidationErrors(['duration']);
     }
 
+    public function test_update_nonexistent_class_type_returns_404()
+    {
+        $this->actingAsAdmin()
+            ->putJson('/api/class-types/99999', [
+                'name' => 'Updated',
+                'duration' => 90,
+            ])
+            ->assertStatus(404)
+            ->assertJson(['message' => 'Resource not found.']);
+    }
+
     public function test_delete_class_type_success()
     {
         $ct = ClassType::factory()->create();
@@ -105,8 +117,9 @@ class ClassTypeTest extends TestCase
 
     public function test_delete_nonexistent_class_type_returns_404()
     {
-        $this->actingAsAdmin()
-            ->deleteJson('/api/class-types/99999')
-            ->assertStatus(404);
+        $response = $this->actingAsAdmin()
+            ->deleteJson('/api/class-types/99999');
+        $response->assertStatus(404);
+        $response->assertJson(['message' => 'Resource not found.']);
     }
 }

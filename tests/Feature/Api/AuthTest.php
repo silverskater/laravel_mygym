@@ -114,4 +114,25 @@ class AuthTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors('email');
     }
+
+    public function test_logout_deletes_token_and_returns_message()
+    {
+        $user = User::factory()->create();
+        $token = $user->createToken('api')->plainTextToken;
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->postJson('/api/logout');
+        $response->assertOk();
+        $response->assertJson(['message' => 'Logged out successfully.']);
+        // Token should be deleted
+        $this->assertCount(0, $user->tokens()->get());
+    }
+
+    public function test_logout_without_token_still_returns_message()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/logout')
+            ->assertOk()
+            ->assertJson(['message' => 'Logged out successfully.']);
+    }
 }

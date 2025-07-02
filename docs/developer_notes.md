@@ -50,8 +50,21 @@ Sanctum routes and logic are in `routes/api.php` and the `User` model must use t
   `sail artisan test`
 - Run with coverage:  
   `sail artisan test --coverage`
-- Feature and API tests are in `tests/Feature/Api/`.
+- API tests are in `tests/Feature/Api/`.
 - Use factories for all models in tests to ensure database integrity and isolation.
+
+### [Mutation testing](https://en.wikipedia.org/wiki/Mutation_testing) 
+
+Copy `infection.json5` from `infection.json5.dist` and customize as needed for local runs. See [Infection Docs: Configuration](https://infection.github.io/guide/usage.html#configuration) for more details.
+
+**Run the [Infection Mutation Testing Framework](https://infection.github.io/):**
+   ```sh
+   sail exec laravel.test vendor/bin/infection
+   ```
+Note: Running inside Sail (the docker container) ensures the database hostname resolves correctly. Alternatively, configure your `.env.testing` or `phpunit.xml` to use `127.0.0.1` as the DB host when running from the host, and ensure the MySQL port is published.
+
+Check the test log file `infection.log` and address the escaped mutants to improve test coverage.
+
 
 ## Troubleshooting
 
@@ -64,4 +77,3 @@ Sanctum routes and logic are in `routes/api.php` and the `User` model must use t
   sail artisan cache:clear
   sail artisan route:clear
   ```
-
