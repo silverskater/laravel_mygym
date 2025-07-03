@@ -28,7 +28,19 @@
                     </x-nav-link>
                 </div>
                 @endcan
-            </div>
+                @can('book-class', Auth::user())
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('member.booking.create')" :active="request()->routeIs('member.booking.create')">
+                        {{ __('Book a Class') }}
+                    </x-nav-link>
+                </div>
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('member.booking.index')" :active="request()->routeIs('member.booking.index')">
+                        {{ __('Upcoming Classes') }}
+                    </x-nav-link>
+                </div>
+                @endcan
+           </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -90,7 +102,15 @@
                 {{ __('Upcoming Classes') }}
             </x-responsive-nav-link>
             @endcan
-       </div>
+            @can('book-class', Auth::user())
+            <x-responsive-nav-link :href="route('member.booking.create')" :active="request()->routeIs('member.booking.create')">
+                {{ __('Book a Class') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('member.booking.index')" :active="request()->routeIs('member.booking.index')">
+                {{ __('Upcoming Classes') }}
+            </x-responsive-nav-link>
+            @endcan
+        </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">

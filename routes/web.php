@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Controllers\ProfileController;
@@ -12,17 +13,24 @@ Route::get('/', function () {
 
 Route::get('/dashboard', DashboardController::class)->middleware(['auth'])->name('dashboard');
 
-Route::get('/instructor/dashboard', function () {
-    return view('instructor.dashboard');
-})->middleware(['auth', CheckUserRole::class.':instructor'])->name('instructor.dashboard');
+/* Instructor routes */
+Route::middleware(['auth', CheckUserRole::class.':instructor'])->group(function () {
+    Route::get('/instructor/dashboard', fn() => view('instructor.dashboard'))->name('instructor.dashboard');
+    Route::resource('/instructor/schedule', ScheduledClassController::class)
+        ->only(['index', 'create', 'store', 'destroy']);
+});
 
-Route::resource('/instructor/schedule', ScheduledClassController::class)
-    ->only(['index', 'create', 'store', 'destroy'])
-    ->middleware('auth', CheckUserRole::class.':instructor');
+/* Member routes */
+Route::middleware(['auth', CheckUserRole::class.':member'])->group(function () {
+    Route::get('/member/dashboard', fn() => view('member.dashboard'))->name('member.dashboard');
+    // Route::get('/member/schedule', [ScheduledClassController::class, 'index'])->name('member.schedule.index');
+    // Route::get('/member/schedule/{id}', [ScheduledClassController::class, 'show'])->name('member.schedule.show');
 
-Route::get('/member/dashboard', function () {
-    return view('member.dashboard');
-})->middleware(['auth', CheckUserRole::class.':member'])->name('member.dashboard');
+    Route::get('/member/bookings', [BookingController::class, 'index'])->name('member.booking.index');
+    Route::get('/member/booking', [BookingController::class, 'create'])->name('member.booking.create');
+    Route::post('/member/booking', [BookingController::class, 'store'])->name('member.booking.store');
+    Route::delete('/member/booking/{id}', [BookingController::class, 'destroy'])->name('member.booking.destroy');
+});
 
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
