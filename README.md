@@ -1,6 +1,6 @@
 # Laravel MyGym
 
-A web-app for managing gym membership and classes. 
+Online booking system for gyms or fitness studios. The systems allow members to view schedules, check availability, and reserve spots online. 
 
 [API endpoints](./docs/api.md)
 
