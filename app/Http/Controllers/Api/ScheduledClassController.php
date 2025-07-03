@@ -38,7 +38,7 @@ class ScheduledClassController extends Controller
             'instructor_id' => 'required|exists:users,id',
             'scheduled_at' => 'required|date',
             'capacity' => 'integer|min:1',
-            'status' => 'in:scheduled,completed,canceled',
+            'status' => 'in:scheduled,completed,cancelled',
             'location' => 'string|nullable',
             'description' => 'string|nullable',
         ]);
@@ -57,7 +57,7 @@ class ScheduledClassController extends Controller
             'instructor_id' => 'exists:users,id',
             'scheduled_at' => 'date',
             'capacity' => 'integer|min:1',
-            'status' => 'in:scheduled,completed,canceled',
+            'status' => 'in:scheduled,completed,cancelled',
             'location' => 'string|nullable',
             'description' => 'string|nullable',
         ]);

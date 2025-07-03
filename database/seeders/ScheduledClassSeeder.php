@@ -17,7 +17,7 @@ class ScheduledClassSeeder extends Seeder
             ->count(50)
             ->state(['status' => 'completed'])
             ->create();
-        // Future classes where some are canceled.
+        // Future classes where some are cancelled.
         ScheduledClass::factory()
             ->count(50)
             ->create();
