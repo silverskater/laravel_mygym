@@ -17,6 +17,7 @@ class ScheduledClassController extends Controller
         $scheduledClasses = Auth::user()->scheduledClasses()
             ->where('scheduled_at', '>', now())
             ->where('status', 'scheduled')
+            ->with('classType')
             ->oldest('scheduled_at')
             ->get();
         return view('instructor.upcoming')->with('scheduledClasses', $scheduledClasses);

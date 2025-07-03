@@ -12,7 +12,7 @@ class ScheduledClassController extends Controller
 {
     public function index(Request $request)
     {
-        $query = ScheduledClass::query();
+        $query = ScheduledClass::query()->with(['instructor', 'classType']);
         if ($request->has('instructor_id')) {
             $query->where('instructor_id', $request->instructor_id);
         }
@@ -24,7 +24,7 @@ class ScheduledClassController extends Controller
 
     public function show($id)
     {
-        $scheduledClass = ScheduledClass::find($id);
+        $scheduledClass = ScheduledClass::with(['instructor', 'classType'])->find($id);
         if (!$scheduledClass) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
@@ -81,7 +81,7 @@ class ScheduledClassController extends Controller
         if (!$classType) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
-        return $classType->scheduledClasses()->get();
+        return $classType->scheduledClasses()->with(['instructor', 'classType'])->get();
     }
 
     public function userClasses($id)
@@ -92,7 +92,9 @@ class ScheduledClassController extends Controller
         }
         // If instructor, return classes they instruct.
         if ($user->role === 'instructor') {
-            return ScheduledClass::where('instructor_id', $user->id)->get();
+            return ScheduledClass::where('instructor_id', $user->id)
+                ->with(['instructor', 'classType'])
+                ->get();
         }
         // For 'member'.
         return [];
