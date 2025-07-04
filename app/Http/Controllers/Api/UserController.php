@@ -16,16 +16,17 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
+
         return $user;
     }
 
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $validated = $request->validate([
@@ -35,16 +36,18 @@ class UserController extends Controller
             'phone' => 'string|nullable',
         ]);
         $user->update($validated);
+
         return response()->json($user);
     }
 
     public function destroy($id)
     {
         $user = User::find($id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $user->delete();
+
         return response()->noContent();
     }
 }

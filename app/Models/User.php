@@ -4,10 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -69,11 +69,13 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<ScheduledClass, $this>
      */
-    public function scheduledClasses() : HasMany {
+    public function scheduledClasses(): HasMany
+    {
         return $this->hasMany(ScheduledClass::class, 'instructor_id');
     }
 
-    public function bookings() : BelongsToMany {
+    public function bookings(): BelongsToMany
+    {
         // This defines a many-to-many relationship with ScheduledClass through the bookings table.
         // The pivot table 'bookings' contains additional fields 'status' and 'created_at'.
         // The 'user_id' is the foreign key in the bookings table that references this User model,
@@ -88,7 +90,7 @@ class User extends Authenticatable
         // 'scheduled_class_id', 'status', and 'created_at'.
         // Ensure the bookings table is created with these columns in your migration.
         return $this->belongsToMany(ScheduledClass::class, 'bookings', 'user_id', 'scheduled_class_id')
-            //->withPivot('status', 'created_at')
+            // ->withPivot('status', 'created_at')
             ->withTimestamps();
     }
 }

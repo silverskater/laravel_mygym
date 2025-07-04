@@ -29,4 +29,4 @@ class ScheduledClassFactory extends Factory
             'updated_at' => now(),
         ];
     }
-};
+}

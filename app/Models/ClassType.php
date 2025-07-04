@@ -22,6 +22,6 @@ class ClassType extends Model
 
     public function scheduledClasses()
     {
-         return $this->hasMany(ScheduledClass::class);
+        return $this->hasMany(ScheduledClass::class);
     }
 }

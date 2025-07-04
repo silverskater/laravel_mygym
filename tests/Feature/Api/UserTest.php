@@ -13,6 +13,7 @@ class UserTest extends TestCase
     protected function actingAsAdmin()
     {
         $admin = User::factory()->create(['role' => 'admin']);
+
         return $this->actingAs($admin, 'sanctum');
     }
 

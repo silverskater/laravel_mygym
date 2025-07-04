@@ -70,7 +70,7 @@ class AuthTest extends TestCase
         foreach ($edgePasswords as $pw) {
             $response = $this->postJson('/api/register', [
                 'name' => 'Edge',
-                'email' => uniqid() . '@edge.com',
+                'email' => uniqid().'@edge.com',
                 'password' => $pw,
             ]);
             $response->assertCreated();
@@ -119,7 +119,7 @@ class AuthTest extends TestCase
     {
         $user = User::factory()->create();
         $token = $user->createToken('api')->plainTextToken;
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->postJson('/api/logout');
         $response->assertOk();
         $response->assertJson(['message' => 'Logged out successfully.']);
@@ -129,6 +129,7 @@ class AuthTest extends TestCase
 
     public function test_logout_without_token_still_returns_message()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create();
         $this->actingAs($user, 'sanctum')
             ->postJson('/api/logout')

@@ -16,9 +16,10 @@ class ClassTypeController extends Controller
     public function show($id)
     {
         $classType = ClassType::find($id);
-        if (!$classType) {
+        if (! $classType) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
+
         return $classType;
     }
 
@@ -35,13 +36,14 @@ class ClassTypeController extends Controller
             'image' => 'string|nullable',
         ]);
         $classType = ClassType::create($validated);
+
         return response()->json($classType, 201);
     }
 
     public function update(Request $request, $id)
     {
         $classType = ClassType::find($id);
-        if (!$classType) {
+        if (! $classType) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $validated = $request->validate([
@@ -55,16 +57,18 @@ class ClassTypeController extends Controller
             'image' => 'string|nullable',
         ]);
         $classType->update($validated);
+
         return response()->json($classType);
     }
 
     public function destroy($id)
     {
         $classType = ClassType::find($id);
-        if (!$classType) {
+        if (! $classType) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $classType->delete();
+
         return response()->noContent();
     }
 }

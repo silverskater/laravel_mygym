@@ -15,11 +15,11 @@ class UserSeeder extends Seeder
         // Fixed user data for manual testing.
         User::factory()->create([
             'name' => 'Foo',
-            'email' => 'foo@example.com'
+            'email' => 'foo@example.com',
         ]);
         User::factory()->create([
             'name' => 'Bar',
-            'email' => 'bar@example.com'
+            'email' => 'bar@example.com',
         ]);
         User::factory()->create([
             'name' => 'John Doe',

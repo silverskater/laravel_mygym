@@ -14,9 +14,8 @@ class DashboardController extends Controller
     public function __invoke(Request $request)
     {
         if (in_array(Auth::user()->role, User::ROLES)) {
-            $route = Auth::user()->role . '.dashboard';
-        }
-        else {
+            $route = Auth::user()->role.'.dashboard';
+        } else {
             $route = 'login';
         }
 

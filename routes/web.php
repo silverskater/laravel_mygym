@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\BookingController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\CheckUserRole;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduledClassController;
+use App\Http\Middleware\CheckUserRole;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,14 +15,14 @@ Route::get('/dashboard', DashboardController::class)->middleware(['auth'])->name
 
 /* Instructor routes */
 Route::middleware(['auth', CheckUserRole::class.':instructor'])->group(function () {
-    Route::get('/instructor/dashboard', fn() => view('instructor.dashboard'))->name('instructor.dashboard');
+    Route::get('/instructor/dashboard', fn () => view('instructor.dashboard'))->name('instructor.dashboard');
     Route::resource('/instructor/schedule', ScheduledClassController::class)
         ->only(['index', 'create', 'store', 'destroy']);
 });
 
 /* Member routes */
 Route::middleware(['auth', CheckUserRole::class.':member'])->group(function () {
-    Route::get('/member/dashboard', fn() => view('member.dashboard'))->name('member.dashboard');
+    Route::get('/member/dashboard', fn () => view('member.dashboard'))->name('member.dashboard');
     // Route::get('/member/schedule', [ScheduledClassController::class, 'index'])->name('member.schedule.index');
     // Route::get('/member/schedule/{id}', [ScheduledClassController::class, 'show'])->name('member.schedule.show');
 

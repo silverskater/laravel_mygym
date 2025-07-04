@@ -16,7 +16,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6',
-            'role' => 'in:' . implode(',', User::ROLES)
+            'role' => 'in:'.implode(',', User::ROLES),
         ]);
         $user = User::create([
             'name' => $validated['name'],
@@ -25,6 +25,7 @@ class AuthController extends Controller
             'role' => $validated['role'] ?? User::DEFAULT_ROLE,
         ]);
         $token = $user->createToken('api')->plainTextToken;
+
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
@@ -41,12 +42,13 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         $user = User::where('email', $validated['email'])->first();
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
         $token = $user->createToken('api')->plainTextToken;
+
         return response()->json([
             'id' => $user->id,
             'name' => $user->name,
@@ -62,6 +64,7 @@ class AuthController extends Controller
         if ($token) {
             $token->delete();
         }
+
         return response()->json(['message' => 'Logged out successfully.']);
     }
 }

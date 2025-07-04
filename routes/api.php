@@ -1,9 +1,10 @@
 <?php
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClassTypeController;
+use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\ScheduledClassController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\MeController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -15,7 +16,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
 Route::middleware('auth:sanctum')->group(function () {
     // Class Types CRUD
     Route::apiResource('class-types', ClassTypeController::class);
-    //Route::apiResource('class-types.scheduled-classes', ScheduledClassController::class)->shallow();
+    // Route::apiResource('class-types.scheduled-classes', ScheduledClassController::class)->shallow();
     Route::get('class-types/{id}/scheduled-classes', [ScheduledClassController::class, 'indexByClassType']);
     // Scheduled Classes CRUD
     Route::apiResource('scheduled-classes', ScheduledClassController::class);

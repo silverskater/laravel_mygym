@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ScheduledClass;
 use App\Models\ClassType;
+use App\Models\ScheduledClass;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -19,15 +19,17 @@ class ScheduledClassController extends Controller
         if ($request->has('date')) {
             $query->whereDate('scheduled_at', $request->date);
         }
+
         return $query->get();
     }
 
     public function show($id)
     {
         $scheduledClass = ScheduledClass::with(['instructor', 'classType'])->find($id);
-        if (!$scheduledClass) {
+        if (! $scheduledClass) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
+
         return $scheduledClass;
     }
 
@@ -43,13 +45,14 @@ class ScheduledClassController extends Controller
             'description' => 'string|nullable',
         ]);
         $scheduledClass = ScheduledClass::create($validated);
+
         return response()->json($scheduledClass, 201);
     }
 
     public function update(Request $request, $id)
     {
         $scheduledClass = ScheduledClass::find($id);
-        if (!$scheduledClass) {
+        if (! $scheduledClass) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $validated = $request->validate([
@@ -62,32 +65,35 @@ class ScheduledClassController extends Controller
             'description' => 'string|nullable',
         ]);
         $scheduledClass->update($validated);
+
         return response()->json($scheduledClass);
     }
 
     public function destroy($id)
     {
         $scheduledClass = ScheduledClass::find($id);
-        if (!$scheduledClass) {
+        if (! $scheduledClass) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         $scheduledClass->delete();
+
         return response()->noContent();
     }
 
     public function indexByClassType($id)
     {
         $classType = ClassType::find($id);
-        if (!$classType) {
+        if (! $classType) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
+
         return $classType->scheduledClasses()->with(['instructor', 'classType'])->get();
     }
 
     public function userClasses($id)
     {
         $user = User::find($id);
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'Resource not found.'], 404);
         }
         // If instructor, return classes they instruct.
@@ -96,6 +102,7 @@ class ScheduledClassController extends Controller
                 ->with(['instructor', 'classType'])
                 ->get();
         }
+
         // For 'member'.
         return [];
     }

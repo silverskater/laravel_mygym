@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Api;
 
-use App\Models\ScheduledClass;
 use App\Models\ClassType;
+use App\Models\ScheduledClass;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -15,6 +15,7 @@ class ScheduledClassTest extends TestCase
     protected function actingAsAdmin()
     {
         $admin = User::factory()->create(['role' => 'admin']);
+
         return $this->actingAs($admin, 'sanctum');
     }
 

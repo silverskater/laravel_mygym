@@ -20,7 +20,7 @@ return new class extends Migration
     public function up(): void
     {
         // Prevent unnecessary database overhead and storage usage in production.
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             return;
         }
 
@@ -66,7 +66,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (!app()->environment('local')) {
+        if (! app()->environment('local')) {
             return;
         }
 

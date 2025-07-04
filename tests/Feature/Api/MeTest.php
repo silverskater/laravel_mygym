@@ -14,6 +14,7 @@ class MeTest extends TestCase
     protected function actingAsUser()
     {
         $user = User::factory()->create(['password' => Hash::make('password')]);
+
         return [$user, $this->actingAs($user, 'sanctum')];
     }
 
