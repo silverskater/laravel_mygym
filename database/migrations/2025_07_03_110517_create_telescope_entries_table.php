@@ -19,6 +19,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Prevent unnecessary database overhead and storage usage in production.
+        if (!app()->environment('local')) {
+            return;
+        }
+
         $schema = Schema::connection($this->getConnection());
 
         $schema->create('telescope_entries', function (Blueprint $table) {
@@ -61,6 +66,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (!app()->environment('local')) {
+            return;
+        }
+
         $schema = Schema::connection($this->getConnection());
 
         $schema->dropIfExists('telescope_entries_tags');
