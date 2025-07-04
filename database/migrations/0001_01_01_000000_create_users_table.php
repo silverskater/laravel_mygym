@@ -32,7 +32,8 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            // While MySQL automatically creates indexes for foreign keys, it's explicitly defined for other databases.
+            $table->foreignIdFor(User::class)->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
@@ -49,6 +50,7 @@ return new class extends Migration
         // Note: Ideally each migration should only drop the tables it created
         // and best practice is to run rollbacks one at a time in the correct
         // order.
+        Schema::dropIfExists('bookings');
         Schema::dropIfExists('scheduled_classes');
         // Drop the main tables last
         Schema::dropIfExists('users');
