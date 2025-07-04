@@ -31,6 +31,7 @@ class IncrementDate extends Command
             $this->info("Incrementing scheduled classes by {$days} day(s).");
         } else {
             $this->error('Invalid number of days specified. Please provide a number.');
+
             return;
         }
         ScheduledClass::latest('scheduled_at')->get()->each(function ($class) use ($days) {

@@ -17,6 +17,8 @@
     `sail shell`
 -   **Run artisan:**  
     `sail artisan <command>`
+-   **Run artisan tinker:**  
+    `sail artisan tinker`
 
 ## API
 
