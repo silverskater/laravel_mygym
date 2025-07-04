@@ -23,7 +23,6 @@ class BookingController extends Controller
     {
         Auth::user()->bookings()->attach($request->input('scheduled_class_id'), [
             'status' => 'pending',
-            'booking_time' => now(),
         ]);
 
         return redirect()->route('member.booking.index')
