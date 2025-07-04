@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ClassCancelled;
+use App\Jobs\NotifyClassCancelledJob;
 use App\Mail\ClassCancelledMail;
 use App\Notifications\ClassCancelledNotification;
 use Auth;
@@ -38,6 +39,9 @@ class NotifyClassCancelled
         /*$scheduledClass->members->each(function ($member) use ($scheduledClass) {
             Mail::to($member)->send(new ClassCancelledMail($scheduledClass));
         });*/
-        Notification::send($scheduledClass->members, new ClassCancelledNotification($scheduledClass));
+        NotifyClassCancelledJob::dispatch(
+            $scheduledClass->members,
+            $scheduledClass
+        );
     }
 }
