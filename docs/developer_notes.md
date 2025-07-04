@@ -67,6 +67,21 @@ Note: Running inside Sail (the docker container) ensures the database hostname r
 
 Check the test log file `infection.log` and address the escaped mutants to improve test coverage.
 
+## Utility Commands
+
+### Increment Scheduled Class Dates
+
+The custom Artisan command `app:increment-date` increments the `scheduled_at` date for all scheduled classes by one or more days.
+This is useful for testing or rolling over class schedules in bulk.
+
+**Usage:**
+
+```sh
+sail artisan app:increment-date --days=3
+```
+
+Each scheduled class will have its date incremented by one day, and the command will output the updated date for each class.
+
 ## Troubleshooting
 
 -   If API endpoints return HTML instead of JSON, ensure you set the `Accept: application/json` header.
