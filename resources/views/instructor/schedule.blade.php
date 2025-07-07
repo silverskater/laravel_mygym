@@ -13,25 +13,37 @@
                         @csrf
                         <div class="space-y-6">
                             <div>
-                                <label class="text-sm">Select type of class</label>
-                                <select name="class_type_id" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" required>
+                                <label for="class_type_id" class="text-sm">Select type of class</label>
+                                <select name="class_type_id" id="class_type_id" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" required>
+                                    <option value="" disabled {{ old('class_type_id') ? '' : 'selected' }}>Select a class</option>
                                     @foreach ($classTypes as $classType)
-                                    <option value="{{ $classType->id }}">{{ $classType->name }}</option>
+                                        {{-- Use old() to re-select the previous value on validation error --}}
+                                        <option value="{{ $classType->id }}" {{ old('class_type_id') == $classType->id ? 'selected' : '' }}>{{ $classType->name }}</option>
                                     @endforeach
                                 </select>
+                                {{-- Display the error for class_type_id --}}
+                                @error('class_type_id')
+                                <div class="text-sm text-red-600 mt-2">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="flex gap-6">
                                 <div class="flex-1">
-                                    <label class="text-sm">Date</label>
-                                    <input type="date" name="date" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" min="{{ date('Y-m-d', strtotime('tomorrow')) }}" required>
+                                    <label for="date" class="text-sm">Date</label>
+                                    <input type="date" name="date" id="date" value="{{ old('date') }}" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" min="{{ now()->toDateString() }}" required>
+                                    @error('date')
+                                    <div class="text-sm text-red-600 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="flex-1">
-                                    <label class="text-sm">Time</label>
-                                    <select type="time" name="time" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" required>
+                                    <label for="time" class="text-sm">Time</label>
+                                    <select name="time" id="time" class="block mt-2 w-full border-gray-300 focus:ring-0 focus:border-gray-500" required>
                                         @for ($time = strtotime('06:00'); $time <= strtotime('20:30'); $time += 30 * 60)
-                                        <option value="{{ date('H:i:s', $time) }}">{{ date('H:i', $time) }}</option>
+                                            <option value="{{ date('H:i:s', $time) }}" {{ old('time') == date('H:i:s', $time) ? 'selected' : '' }}>{{ date('H:i', $time) }}</option>
                                         @endfor
                                     </select>
+                                    @error('time')
+                                    <div class="text-sm text-red-600 mt-2">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                             <div>

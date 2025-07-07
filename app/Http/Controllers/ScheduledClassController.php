@@ -38,17 +38,11 @@ class ScheduledClassController extends Controller
      */
     public function store(StoreScheduledClassRequest $request): RedirectResponse
     {
-        $request->merge([
-            'scheduled_at' => $request->input('date').' '.$request->input('time'),
+        ScheduledClass::create([
             'instructor_id' => Auth::id(),
+            'class_type_id' => $request->validated()['class_type_id'],
+            'scheduled_at' => $request->validated()['date'] . ' ' . $request->validated()['time'],
         ]);
-
-        $validated = $request->validate([
-            'instructor_id' => 'required',
-            'scheduled_at' => 'required|after:now',
-        ]);
-
-        ScheduledClass::create($validated);
 
         return redirect()->route('schedule.index');
     }

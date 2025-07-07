@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBookingRequest;
 use App\Models\ScheduledClass;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
     public function create()
     {
-        // $scheduledClasses = ScheduledClass::where('status', 'scheduled')->get();
         $scheduledClasses = ScheduledClass::upcoming()
             ->with(['classType', 'instructor'])
             ->notBookedByUser(Auth::id())
@@ -19,29 +19,24 @@ class BookingController extends Controller
         return view('member.booking', compact('scheduledClasses'));
     }
 
-    public function store(Request $request)
+    public function store(StoreBookingRequest $request): RedirectResponse
     {
-        Auth::user()->bookings()->attach($request->input('scheduled_class_id'), [
+        Auth::user()->bookings()->attach($request->validated()['scheduled_class_id'], [
             'status' => 'pending',
         ]);
 
         return redirect()->route('member.booking.index')
-            ->with('success', 'Booking created successfully.');
+            ->with('success', 'You have successfully booked the class!');
     }
 
     public function index()
     {
         $bookings = Auth::user()->bookings()->upcoming()
             ->where('bookings.status', '!=', 'cancelled')
-            // ->wherePivot('status', '!=', 'cancelled')
-            // ->whereHas('scheduledClass', function ($query) {
-            //     $query->where('scheduled_at', '>=', now());
-            // })
             ->with(['classType', 'instructor'])
             ->oldest('bookings.created_at')
             ->get();
 
-        // return view('bookings.index', compact('bookings'));
         return view('member.upcoming')->with('bookings', $bookings);
     }
 
