@@ -26,7 +26,7 @@
                             <form method="post" action="{{ route('schedule.destroy', $class) }}">
                             @csrf
                             @method('DELETE')
-                            <x-danger-button class="px-3 py-1">Cancel</x-danger-button>
+                            <x-danger-button class="px-3 py-1">{{ __('Cancel') }}</x-danger-button>
                             </form>
                         </div>
                         @endcan
