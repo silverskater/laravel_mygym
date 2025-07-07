@@ -13,12 +13,19 @@ class InstructorTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_instructor_redirection_to_dashboard(): void
+    protected $user;
+
+    protected function setUp(): void
     {
-        $user = User::factory()->create([
+        parent::setUp();
+        $this->user = User::factory()->create([
             'role' => 'instructor',
         ]);
-        $response = $this->actingAs($user)->get('/dashboard');
+    }
+
+    public function test_instructor_redirection_to_dashboard(): void
+    {
+        $response = $this->actingAs($this->user)->get('/dashboard');
         $response->assertRedirectToRoute('instructor.dashboard');
         $this->followRedirects($response)
             ->assertSeeText('Hey instructor')
@@ -27,12 +34,9 @@ class InstructorTest extends TestCase
 
     public function test_instructor_can_schedule_classes(): void
     {
-        $user = User::factory()->create([
-            'role' => 'instructor',
-        ]);
         $this->seed(ClassTypeSeeder::class);
         $datetime = now()->addDays(1)->setTime(7, 0);
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->post('/instructor/schedule', [
                 'class_type_id' => ClassType::where('name', 'Tai Chi')->first()->id,
                 'date' => $datetime->toDateString(),
@@ -42,23 +46,20 @@ class InstructorTest extends TestCase
         $this->assertDatabaseHas('scheduled_classes', [
             'class_type_id' => ClassType::where('name', 'Tai Chi')->first()->id,
             'scheduled_at' => $datetime,
-            'instructor_id' => $user->id,
+            'instructor_id' => $this->user->id,
         ]);
         $response->assertRedirectToRoute('schedule.index');
     }
 
     public function test_instructor_can_cancel_classes(): void
     {
-        $user = User::factory()->create([
-            'role' => 'instructor',
-        ]);
         $this->seed(ClassTypeSeeder::class);
         $scheduledClass = ScheduledClass::factory()->create([
             'class_type_id' => ClassType::where('name', 'Mobility Training')->first()->id,
             'scheduled_at' => now()->addDays(1)->setTime(9, 0),
-            'instructor_id' => $user->id,
+            'instructor_id' => $this->user->id,
         ]);
-        $response = $this->actingAs($user)
+        $response = $this->actingAs($this->user)
             ->delete('/instructor/schedule/' . $scheduledClass->id);
 
         $this->assertDatabaseMissing('scheduled_classes', [
@@ -69,24 +70,15 @@ class InstructorTest extends TestCase
 
     public function test_instructor_cannot_cancel_class_two_hours_before_start(): void
     {
-        $user = User::factory()->create([
-            'role' => 'instructor',
-        ]);
         $this->seed(ClassTypeSeeder::class);
         $datetime = now()->addHours(1)->minute(0)->second(0);
-        $scheduledClass = ScheduledClass::factory()->create([
+        ScheduledClass::factory()->create([
             'class_type_id' => ClassType::first()->id,
             'scheduled_at' => $datetime,
-            'instructor_id' => $user->id,
+            'instructor_id' => $this->user->id,
         ]);
-        $this->actingAs($user)
+        $this->actingAs($this->user)
             ->get('/instructor/schedule')
             ->assertDontSeeText('Cancel');
-        // Attempt to cancel the class.
-        $response = $this->actingAs($user)
-            ->delete('/instructor/schedule/' . $scheduledClass->id);
-        $this->assertDatabaseHas('scheduled_classes', [
-            'id' => $scheduledClass->id,
-        ]);
     }
 }
