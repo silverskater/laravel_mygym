@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Events\ClassCancelled;
+use App\Http\Requests\StoreScheduledClassRequest;
 use App\Models\ClassType;
 use App\Models\ScheduledClass;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ScheduledClassController extends Controller
@@ -35,20 +36,19 @@ class ScheduledClassController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreScheduledClassRequest $request): RedirectResponse
     {
         $request->merge([
             'scheduled_at' => $request->input('date').' '.$request->input('time'),
             'instructor_id' => Auth::id(),
         ]);
 
-        $values = $request->validate([
-            'class_type_id' => 'required',
+        $validated = $request->validate([
             'instructor_id' => 'required',
-            'scheduled_at' => 'required|unique:scheduled_classes,scheduled_at|after:now',
+            'scheduled_at' => 'required|after:now',
         ]);
 
-        ScheduledClass::create($values);
+        ScheduledClass::create($validated);
 
         return redirect()->route('schedule.index');
     }
